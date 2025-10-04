@@ -7,6 +7,7 @@ class ShortTransactions(BaseModel):
     date: datetime.datetime
     sum_op: int
 
+
 class Transactions(ShortTransactions):
     telegram_id: int
     id: int

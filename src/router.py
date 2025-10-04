@@ -9,16 +9,20 @@ router = APIRouter()
 
 
 @router.get("/users", tags=["Users"], response_model=list[Users])
-async def get_all_users(token:str = Depends(check_admin_token)):
+async def get_all_users(token: str = Depends(check_admin_token)):
     users = await DatabaseDAO.get_users()
     return users
 
 
-@router.get("/users/{telegram_id}", tags=["Users", "Transactions"], response_model=UserInfo)
+@router.get(
+    "/users/{telegram_id}", tags=["Users", "Transactions"], response_model=UserInfo
+)
 async def get_user_info(telegram_id: int):
-    user  = await DatabaseDAO.get_user(telegram_id=telegram_id)
+    user = await DatabaseDAO.get_user(telegram_id=telegram_id)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
     user = dict(user)
     tr = await DatabaseDAO.get_user_transactions(telegram_id=telegram_id)
     image = await QR.image_to_base64(f"static/qrs/{telegram_id}.png")
@@ -28,7 +32,7 @@ async def get_user_info(telegram_id: int):
 
 
 @router.post("/pay", tags=["Transactions"])
-async def user_transaction(data: UserTrans, token:bool=Depends(check_admin_token)):
+async def user_transaction(data: UserTrans, token: bool = Depends(check_admin_token)):
     try:
         await DatabaseDAO.transaction(telegram_id=data.telegram_id, sum=data.sum)
         return {"type": "INFO", "msg": f"Success"}
@@ -37,7 +41,7 @@ async def user_transaction(data: UserTrans, token:bool=Depends(check_admin_token
 
 
 @router.post("/add_user", tags=["Users"])
-async def add_user(user: User, token:bool = Depends(check_public_token)):
+async def add_user(user: User, token: bool = Depends(check_public_token)):
     try:
         await DatabaseDAO.add_user_to_db(
             telegram_id=user.telegram_id,
@@ -51,11 +55,12 @@ async def add_user(user: User, token:bool = Depends(check_public_token)):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{e}")
 
 
-@router.get('/test')
-async def test(token:bool=Depends(check_admin_token)):
+@router.get("/test")
+async def test(token: bool = Depends(check_admin_token)):
     if token:
         return {"msg": "Success"}
     raise HTTPException(status_code=401, detail="Wrong token")
+
 
 # @router.get("/", response_class=HTMLResponse)
 # async def main_page(request: Request, telegram_id: str=None):

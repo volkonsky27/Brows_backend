@@ -9,7 +9,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/{telegram_id}/", response_class=HTMLResponse)
-async def get_user_info_front(telegram_id: int,request: Request):
+async def get_user_info_front(telegram_id: int, request: Request):
     user = await get_user_info(telegram_id)
     user.update({"request": request})
     return templates.TemplateResponse("index1.html", user)

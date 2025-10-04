@@ -5,13 +5,12 @@ import cv2
 from pyzbar.pyzbar import decode
 
 
-
 class QR_grad:
     @staticmethod
     async def create_gradient_qr(data: str, image_path: str):
         """
         Асинхронно создает QR-код с градиентом от розового к лазурному и закругленными краями.
-    
+
         Args:
             data (str): Данные для кодирования в QR-код
             image_path (str): Путь для сохранения результата
@@ -29,11 +28,13 @@ class QR_grad:
             qr.make(fit=True)
 
             # Создаем изображение QR-кода
-            qr_image = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+            qr_image = qr.make_image(fill_color="black", back_color="white").convert(
+                "RGB"
+            )
 
             # Создаем градиентную маску
             width, height = qr_image.size
-            gradient = Image.new('RGB', (width, height), color=0)
+            gradient = Image.new("RGB", (width, height), color=0)
             draw = ImageDraw.Draw(gradient)
 
             # Розовый и лазурный цвета в RGB
@@ -58,14 +59,15 @@ class QR_grad:
                         qr_pixels[x, y] = gradient_pixels[x, y]
 
             # Добавляем закругленные края
-            mask = Image.new('L', (width, height), 0)
+            mask = Image.new("L", (width, height), 0)
             mask_draw = ImageDraw.Draw(mask)
             radius = min(width, height) // 10  # Радиус скругления
             mask_draw.rounded_rectangle([(0, 0), (width, height)], radius, fill=255)
-            result = Image.new('RGB', (width, height), (255, 255, 255))
+            result = Image.new("RGB", (width, height), (255, 255, 255))
             result.paste(qr_image, (0, 0), mask)
             # Сохраняем результат
-            result.save(image_path, 'PNG')
+            result.save(image_path, "PNG")
+
         # Запускаем в отдельном потоке чтобы не блокировать event loop
         await asyncio.to_thread(generate_qr)
 
@@ -110,10 +112,17 @@ class QR_grad:
             # Если нашли QR-код, возвращаем данные
             if decoded_objects:
                 for obj in decoded_objects:
-                    if obj.type == 'QRCODE':
-                        return obj.data.decode('utf-8')
+                    if obj.type == "QRCODE":
+                        return obj.data.decode("utf-8")
             # Если ничего не нашли
             raise ValueError("QR-код не найден или не может быть декодирован")
+
         # Запускаем декодирование в отдельном потоке
         return await asyncio.to_thread(decode_image)
 
+
+async def main():
+    await QR_grad.create_gradient_qr("4762634553", "qr.png")
+
+
+asyncio.run(main())

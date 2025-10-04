@@ -29,8 +29,9 @@ class DatabaseDAO:
     @classmethod
     @connection
     async def get_user(cls, session, telegram_id: int):
-        statement_user = (select(User.username, User.first_name, User.last_name, User.balance)
-                          .where(User.telegram_id == telegram_id))
+        statement_user = select(
+            User.username, User.first_name, User.last_name, User.balance
+        ).where(User.telegram_id == telegram_id)
         user = await session.execute(statement_user)
         user = user.mappings().first()
         if not user:
@@ -59,7 +60,7 @@ class DatabaseDAO:
         if not user:
             raise AttributeError("Нет такого пользователя")
         if (
-            sum < 0 and user.__dict__["balance"] < sum  * -1
+            sum < 0 and user.__dict__["balance"] < sum * -1
         ):  # Проверим на баланс для списания
             raise ValueError("Недостаточно средств")
         user.balance += sum
