@@ -45,7 +45,7 @@ async def add_user(user: User, token:bool = Depends(check_public_token)):
             last_name=user.last_name,
             username=user.username,
         )
-        await QR.make_qr("user.telegram_id", f"static/qrs/{user.telegram_id}.png")
+        await QR.make_qr(f"{user.telegram_id}", f"static/qrs/{user.telegram_id}.png")
         return {"type": "info", "msg": f"CREATE {user.telegram_id}"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{e}")

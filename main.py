@@ -11,4 +11,6 @@ app.include_router(router)
 app.include_router(front_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+
 uvicorn.run(app, port="8080")
