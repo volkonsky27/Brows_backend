@@ -3,3 +3,4 @@
 migrations
 test.py
 .env
+*.png
