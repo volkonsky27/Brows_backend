@@ -1,0 +1,9 @@
+pydantic-settings
+alembic
+SQLAlchemy~=2.0.43
+qrcode~=8.2
+pydantic~=2.11.7
+uvicorn~=0.35.0
+fastapi~=0.116.1
+pillow
+aiofiles
