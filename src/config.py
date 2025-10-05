@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DB_PWD: str
     SECRET_TOKEN: str
     PUBLIC_TOKEN: str
+    DOMAIN: str
 
     class Config:
         env_file = ".env"

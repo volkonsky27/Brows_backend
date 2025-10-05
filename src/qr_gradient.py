@@ -119,10 +119,3 @@ class QR_grad:
 
         # Запускаем декодирование в отдельном потоке
         return await asyncio.to_thread(decode_image)
-
-
-async def main():
-    await QR_grad.create_gradient_qr("4762634553", "qr.png")
-
-
-asyncio.run(main())
