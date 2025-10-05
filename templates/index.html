@@ -1,41 +1,90 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <link href="static/css/style.css" rel="stylesheet">
-    <title>Browissimo</title>
+  <meta charset="UTF-8">
+  <title>Brawissimo</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="navbar">
-    <img src="static/img/logo.jpg" alt="Логотип">
-    <div class="nav-text">Баланс: {{ balance }}&nbsp; <b>{{ first_name }}</b></div>
+<body class="bg-white text-gray-800 flex flex-col items-center p-6">
+
+  <!-- Логотип + баланс -->
+  <div class="flex justify-between items-center w-full max-w-2xl">
+    <div class="flex items-center gap-4">
+      <img src="/static/img/logo.jpg" class="w-16 h-16 rounded-full" alt="logo">
+      <h1 class="text-2xl font-bold">Brawissimo</h1>
+    </div>
+    <div class="text-right">
+      <p class="text-gray-600">Баланс: <span id="balance" class="font-bold"></span></p>
+      <p id="username" class="text-sm text-gray-500"></p>
+    </div>
   </div>
 
-</div>
-<h2></h2>
-<h2>Это показываем Дианочке</h2>
-    <div style="text-align: center;">
-        <img src="static/qrs/{{telegram_id}}.png">
-    </div>
-    <h2>Последние операции</h2>
-    <table class="table">
-    <thead>
-      <tr>
-          <th scope="col">Дата</th>
-          <th scope="col">Сумма</th>
-      </tr>
+  <!-- Текст -->
+  <h2 class="text-xl font-semibold my-6">Это показываем Дианочке 📲</h2>
+
+  <!-- QR -->
+  <div id="qr" class="my-4"></div>
+
+  <!-- Таблица -->
+  <div class="w-full max-w-2xl mt-6">
+    <h3 class="text-lg font-semibold mb-2">Последние операции 💸</h3>
+    <table class="w-full border-collapse border border-gray-200 text-left">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2 border border-gray-200">Дата 🕒</th>
+          <th class="p-2 border border-gray-200">Сумма 💲</th>
+        </tr>
       </thead>
-      <tbody>
-      {% for record in transactions %}
-      <tr>
-          <td>{{record.date}}</td>
-          <td>{{record.sum_op}}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+      <tbody id="transactions"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    }
+
+    async function init() {
+      const tg = window.Telegram.WebApp;
+      const userId = tg.initDataUnsafe?.user?.id;
+
+      const response = await fetch("http://localhost:8080/myuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "user": userId
+        }
+      });
+      const data = await response.json();
+
+      // Наполняем элементы
+      document.getElementById("balance").textContent = data.balance;
+      document.getElementById("username").textContent = data.first_name;
+
+      // QR-код (base64 из ответа)
+      document.getElementById("qr").innerHTML =
+        `<img src="${data.image}" alt="QR Code" class="w-64 h-64">`;
+
+      // Транзакции
+      const tbody = document.getElementById("transactions");
+      data.transactions.forEach(t => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2 border border-gray-200">${formatDate(t.date)}</td>
+          <td class="p-2 border border-gray-200">${t.sum_op}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    init();
+  </script>
 </body>
 </html>
