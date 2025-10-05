@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Brawissimo</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 flex flex-col items-center p-6">
+
+  <!-- Логотип + баланс -->
+  <div class="flex justify-between items-center w-full max-w-2xl">
+    <div class="flex items-center gap-4">
+      <img src="/static/img/logo.jpg" class="w-16 h-16 rounded-full" alt="logo">
+      <h1 class="text-2xl font-bold">Brawissimo</h1>
+    </div>
+    <div class="text-right">
+      <p class="text-gray-600">Баланс: <span id="balance" class="font-bold"></span></p>
+      <p id="username" class="text-sm text-gray-500"></p>
+    </div>
+  </div>
+
+  <!-- Текст -->
+  <h2 class="text-xl font-semibold my-6">Это показываем Дианочке 📲</h2>
+
+  <!-- QR -->
+  <div id="qr" class="my-4"></div>
+
+  <!-- Таблица -->
+  <div class="w-full max-w-2xl mt-6">
+    <h3 class="text-lg font-semibold mb-2">Последние операции 💸</h3>
+    <table class="w-full border-collapse border border-gray-200 text-left">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2 border border-gray-200">Дата 🕒</th>
+          <th class="p-2 border border-gray-200">Сумма 💲</th>
+        </tr>
+      </thead>
+      <tbody id="transactions"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    }
+
+    async function init() {
+      const tg = window.Telegram.WebApp;
+      const userId = tg.initDataUnsafe?.user?.id;
+
+      const response = await fetch("http://localhost:8080/myuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "user": userId
+        }
+      });
+      const data = await response.json();
+
+      // Наполняем элементы
+      document.getElementById("balance").textContent = data.balance;
+      document.getElementById("username").textContent = data.first_name;
+
+      // QR-код (base64 из ответа)
+      document.getElementById("qr").innerHTML =
+        `<img src="${data.image}" alt="QR Code" class="w-64 h-64">`;
+
+      // Транзакции
+      const tbody = document.getElementById("transactions");
+      data.transactions.forEach(t => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="p-2 border border-gray-200">${formatDate(t.date)}</td>
+          <td class="p-2 border border-gray-200">${t.sum_op}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
