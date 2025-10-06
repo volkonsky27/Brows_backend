@@ -3,7 +3,7 @@ from src.qr import QR
 from src.qr_gradient import QR_grad
 from src.dao import DatabaseDAO
 from src.auth import check_admin_token, check_public_token
-from models.pydantic_scheme import User, Users, UserTrans, UserInfo
+from models.pydantic_scheme import User, Users, UserTrans, UserTlg
 
 
 router = APIRouter()
@@ -13,6 +13,12 @@ router = APIRouter()
 async def get_all_users(token: str = Depends(check_admin_token)):
     users = await DatabaseDAO.get_users()
     return users
+
+
+@router.get("/user/{telegram_id}", response_model=UserTlg)
+async def user_info(telegram_id: int, token: str = Depends(check_admin_token)):
+    user = await DatabaseDAO.get_user(telegram_id=telegram_id)
+    return user
 
 
 @router.post("/myuser")
@@ -55,10 +61,3 @@ async def add_user(user: User, token: bool = Depends(check_public_token)):
         return {"type": "info", "msg": f"CREATE {user.telegram_id}"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{e}")
-
-
-@router.get("/test")
-async def test(token: bool = Depends(check_admin_token)):
-    if token:
-        return {"msg": "Success"}
-    raise HTTPException(status_code=401, detail="Wrong token")

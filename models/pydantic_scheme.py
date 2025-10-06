@@ -35,3 +35,10 @@ class UserInfo(BaseModel):
 class UserTrans(BaseModel):
     telegram_id: int
     sum: int
+
+
+class UserTlg(BaseModel):
+    username: Optional[str] = None
+    first_name: str
+    last_name: Optional[str] = None
+    balance: int
