@@ -1,3 +1,6 @@
+celery
+redis
+flower
 pyzbar
 opencv-python
 pydantic-settings

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Request
-from src.qr import QR
-from src.qr_gradient import QR_grad
+from src.qr.qr import QR
+from src.qr.qr_gradient import QR_grad
+from tasks.tasks import newsletter_users
 from src.dao import DatabaseDAO
 from src.auth import check_admin_token, check_public_token
-from models.pydantic_scheme import User, Users, UserTrans, UserTlg
+from models.pydantic_scheme import User, Users, UserTrans, UserTlg, NewsLettering
 
 
 router = APIRouter()
@@ -61,3 +62,11 @@ async def add_user(user: User, token: bool = Depends(check_public_token)):
         return {"type": "info", "msg": f"CREATE {user.telegram_id}"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{e}")
+
+
+@router.post("/newsletter", tags=["Newsletter"])
+async def remind_users(mes: NewsLettering):
+    users = await DatabaseDAO.get_users()
+    users_id = [x.telegram_id for x in users]
+    newsletter_users.delay(users_id, mes.message)
+    return {"msg": "Success"}

@@ -42,3 +42,7 @@ class UserTlg(BaseModel):
     first_name: str
     last_name: Optional[str] = None
     balance: int
+
+
+class NewsLettering(BaseModel):
+    message: str

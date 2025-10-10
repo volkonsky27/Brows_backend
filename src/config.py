@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     SECRET_TOKEN: str
     PUBLIC_TOKEN: str
     DOMAIN: str
+    BOT_TOKEN: str
 
     class Config:
         env_file = ".env"

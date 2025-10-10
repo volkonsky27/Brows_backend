@@ -5,6 +5,7 @@
   <title>Brawissimo</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-white text-gray-800 flex flex-col items-center p-6">
 
@@ -19,7 +20,11 @@
       <p id="username" class="text-sm text-gray-500"></p>
     </div>
   </div>
-
+  <div class="w-full max-w-2xl mt-6">
+      <a target="_blank" href="https://t.me/osmolina_di?text=Здраствуйте! Хочу к вам записаться!">
+      <i class="fab fa-telegram-plane"></i> Записаться на эстетикс
+      </a>
+  </div>
   <!-- Текст -->
   <h2 class="text-xl font-semibold my-6">Это показываем Дианочке 📲</h2>
 
@@ -55,7 +60,7 @@
       const tg = window.Telegram.WebApp;
       const userId = tg.initDataUnsafe?.user?.id;
 
-      const response = await fetch("http://localhost:8080/myuser", {
+      const response = await fetch("http://127.0.0.1:8080/myuser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,25 +10,18 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI(title="Brows", version="1.0")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 origins = [
-    settings.DOMAIN
+    settings.DOMAIN, "http://localhost:8080", "http://127.0.0.1:8080"
 ]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,  # Чтобы позволять отправлять куки
     allow_methods=["GET", "POST"],
-    allow_headers=[
-        "Content-Type",
-        "Set-Cookie",
-        "Access-Control-Allow-Headers",
-        "Access-Control-Allow-Origin",
-        "Authorization",
-        "Token",
-    ],
+    allow_headers="*"
 )
 app.include_router(router)
 app.include_router(front_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port="8080")
+    uvicorn.run(app, port=8080, host="0.0.0.0")
