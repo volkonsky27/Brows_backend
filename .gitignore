@@ -1,6 +1,7 @@
 .idea
 .venv
 migrations
+__pycache__
 alembic.ini
 test.py
 .env
