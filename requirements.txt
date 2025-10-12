@@ -1,6 +1,5 @@
 celery
 redis
-flower
 pyzbar
 opencv-python
 pydantic-settings
@@ -14,3 +13,4 @@ pillow
 aiofiles
 asyncpg
 jinja2
+telebot

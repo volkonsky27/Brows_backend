@@ -1,4 +1,3 @@
-import asyncio
 from tasks.celery_conf import celery_app
 import telebot
 from src.config import settings

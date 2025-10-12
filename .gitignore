@@ -5,3 +5,5 @@ alembic.ini
 test.py
 .env
 *.png
+*.tar
+docker-compose.yml

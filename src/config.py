@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     PUBLIC_TOKEN: str
     DOMAIN: str
     BOT_TOKEN: str
+    REDIS: str
 
     class Config:
         env_file = ".env"

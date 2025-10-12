@@ -5,8 +5,8 @@ from tasks.tasks import newsletter_users
 from src.dao import DatabaseDAO
 from src.auth import check_admin_token, check_public_token
 from models.pydantic_scheme import User, Users, UserTrans, UserTlg, NewsLettering
-
-
+from starlette.background import BackgroundTask
+from starlette.responses import JSONResponse
 router = APIRouter()
 
 
@@ -68,5 +68,5 @@ async def add_user(user: User, token: bool = Depends(check_public_token)):
 async def remind_users(mes: NewsLettering):
     users = await DatabaseDAO.get_users()
     users_id = [x.telegram_id for x in users]
-    newsletter_users.delay(users_id, mes.message)
-    return {"msg": "Success"}
+    task = BackgroundTask(newsletter_users, users_id, mes.message)
+    return JSONResponse({"msg": "Success"}, background=task)
