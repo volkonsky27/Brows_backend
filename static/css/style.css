@@ -1,27 +1,37 @@
-body {
-    font-family: Arial, sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
+html, body {
+      margin: 0;
+      padding: 0;
+      /* чтобы занять всё пространство WebView */
+      width: 100%;
+      height: 100%;
+      /* фиксируем базовую высоту */
+      min-height: 100vh;
+      /* для iOS safe area (notch, индикаторы) */
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-top: env(safe-area-inset-top);
+    }
+    /* Если контента меньше высоты экрана, пусть документ будет чуть выше, чтобы можно было прокручивать */
+body:after {
+  content: "";
+  display: block;
+  height: 1px;
+}
+/* Контейнер с ограничением по ширине */
+.app-container {
+  flex: 1;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
-.navbar {
-  display: flex;               /* размещаем элементы в линию */
-  justify-content: space-between; /* картинка слева, текст справа */
-  align-items: center;         /* выравнивание по вертикали */
-  background-color: white;
-  padding: 10px 20px;
-  color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+  table {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    border-collapse: collapse;
+  }
 
-.navbar img {
-  height: 40px;
-}
-
-.navbar .nav-text {
-    color: #333;
-  font-size: 18px;
-}
+  tr {
+    border-bottom: 10px solid transparent; /* прозрачный отступ */
+  }

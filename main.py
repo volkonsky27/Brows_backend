@@ -9,15 +9,13 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Brows", version="1.0")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-origins = [
-    settings.DOMAIN, "http://localhost:8080", "http://127.0.0.1:8080"
-]
+origins = [settings.DOMAIN, "http://localhost:8080", "http://127.0.0.1:8080"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,  # Чтобы позволять отправлять куки
     allow_methods=["GET", "POST"],
-    allow_headers="*"
+    allow_headers="*",
 )
 app.include_router(router)
 app.include_router(front_router)

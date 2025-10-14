@@ -46,3 +46,9 @@ class UserTlg(BaseModel):
 
 class NewsLettering(BaseModel):
     message: str
+
+
+class Services(BaseModel):
+    id: int
+    service_name: str
+    coast: int

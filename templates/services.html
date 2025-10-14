@@ -1,0 +1,16 @@
+{% include 'template.html' %}
+</body>
+<table>
+    {% for i in services %}
+    <tr>
+        <td>
+            {{i.service_name}}
+        </td>
+        <td>
+            {{i.coast}}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</html>

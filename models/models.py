@@ -23,3 +23,11 @@ class Transaction(Base):
     date: Mapped[datetime.datetime] = mapped_column(DateTime())
     telegram_id: Mapped[int] = mapped_column(ForeignKey("users.telegram_id"))
     sum_op: Mapped[int] = mapped_column(Integer())
+
+
+class Services(Base):
+    __tablename__ = "services"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    service_name: Mapped[str] = mapped_column(String(50))
+    coast: Mapped[int] = mapped_column(Integer())

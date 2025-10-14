@@ -1,5 +1,5 @@
 from src.database import connection
-from models.models import User, Transaction
+from models.models import User, Transaction, Services
 from sqlalchemy import select
 from datetime import datetime
 
@@ -70,3 +70,11 @@ class DatabaseDAO:
         session.add(transaction)
         await session.commit()
         return True
+
+    @classmethod
+    @connection
+    async def get_services(cls, session):
+        statement = select(Services)
+        result = await session.execute(statement)
+        result = result.scalars().all()
+        return result

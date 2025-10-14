@@ -4,9 +4,17 @@ from src.qr.qr_gradient import QR_grad
 from tasks.tasks import newsletter_users
 from src.dao import DatabaseDAO
 from src.auth import check_admin_token, check_public_token
-from models.pydantic_scheme import User, Users, UserTrans, UserTlg, NewsLettering
+from models.pydantic_scheme import (
+    User,
+    Users,
+    UserTrans,
+    UserTlg,
+    NewsLettering,
+    Services,
+)
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
+
 router = APIRouter()
 
 
@@ -64,7 +72,13 @@ async def add_user(user: User, token: bool = Depends(check_public_token)):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"{e}")
 
 
-@router.post("/newsletter", tags=["Newsletter"])
+@router.get("/services", response_model=UserTlg, tags="Services")
+async def get_services():
+    services = await DatabaseDAO.get_services()
+    return services
+
+
+@router.post("/newsletter", tags=["Newsletter"], response_model=Services)
 async def remind_users(mes: NewsLettering):
     users = await DatabaseDAO.get_users()
     users_id = [x.telegram_id for x in users]
