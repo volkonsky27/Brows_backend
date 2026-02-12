@@ -82,5 +82,5 @@ async def get_services():
 async def remind_users(mes: NewsLettering):
     users = await DatabaseDAO.get_users()
     users_id = [x.telegram_id for x in users]
-    task = BackgroundTask(newsletter_users, users_id, mes.message)
-    return JSONResponse({"msg": "Success"}, background=task)
+    task = newsletter_users.delay(users_id, mes.message)
+    return JSONResponse({"msg": "Success", "task_id": task.id})
