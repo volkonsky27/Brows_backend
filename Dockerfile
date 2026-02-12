@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-alpine
 
 COPY requirements.txt .
 RUN apt-get update
@@ -12,4 +12,5 @@ COPY static ./static
 COPY tasks ./tasks
 COPY templates ./templates
 COPY main.py .
-CMD ["python", "main.py"]
+COPY celery.sh .
+CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
