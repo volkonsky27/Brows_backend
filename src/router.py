@@ -12,7 +12,6 @@ from models.pydantic_scheme import (
     NewsLettering,
     Services,
 )
-from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
 router = APIRouter()
